@@ -1,0 +1,307 @@
+# MPS移植プロジェクト 引継ぎ情報
+## A-003-2-5 再開用（limitation の外枠と表示切替余地を確定）
+
+## 1. 現在のフェーズ
+- フェーズ: A-003 画面コンテナ構造作成
+- 完了:
+  - A-003-1: 主要コンテナDOM再現
+  - A-003-2-3: mps_panel_body の縦積み構造確定
+  - A-003-2-4: mps_manual_control_container の再配置
+- 次に着手:
+  - A-003-2-5: limitation の外枠と表示切替余地を確定
+
+---
+
+## 2. 最重要仕様
+- 移植先:
+  - #mps_root = #camera_live_area
+- CSS方針:
+  - #mps_root スコープで閉じる
+  - mps_ 接頭辞を使用
+  - 移植元CSSは参照のみ、コピー禁止
+- レイアウト方針:
+  - mps_panel_body 自体は block レイアウト維持
+  - flex は必要箇所のみ導入
+- debugルール:
+  - 見た目確認のみ
+  - position / display をむやみに変えない
+- 作業ルール:
+  - コード提示は旧コード / 新コードを対で出す
+  - 説明は最小限
+  - 修正後は確認完了まで次の修正を出さない
+
+---
+
+## 3. 現在の確定トップ構造
+#mps_panel
+ ├ #mps_panel_header
+ ├ #mps_panel_body
+ │   ├ .mps_manual_control_container
+ │   ├ .mps_limitation_container
+ │   ├ .mps_track_adjust_tabs_container
+ │   └ .mps_track_adjust_content_container
+ │        ├ .mps_auto_framing_container
+ │        └ .mps_image_adjust_container
+ └ .mps_status
+
+---
+
+## 4. A-003-2-4 で確定したこと
+
+### 4-1. manual_control の再開方針
+- Focus slider を mps_manual_control_main の外へ出す案は中止
+- Focus は main の中に含める
+- manual_control_content 全体を移植元準拠で再配置した
+
+### 4-2. manual_control_content の移植元直下構造
+manual_control_content
+├ manual_frame_adjust_tabs
+├ manual_control_line_1
+├ [PTZ縦積みラッパ]
+│  ├ camera_ptz_ctrl
+│  ├ manual_control
+│  └ lock_part
+├ speed_slider
+├ zoom_slider
+└ focus_slider
+
+### 4-3. manual_control_content の移植元 computed
+- position: relative
+- display: flex
+- flex-direction: row
+- justify-content: space-around
+- align-items: normal
+- width: 511.997px
+- height: 320px
+- box-sizing: content-box
+
+### 4-4. manual_frame_adjust_tabs の移植元 computed
+- position: absolute
+- top: -14px
+- left: 90px
+- width: 240px
+- height: 29px
+- display: flex
+- align-items: center
+- justify-content: center
+- z-index: 2
+
+### 4-5. line系の移植元 computed
+manual_control_line_1
+- top: 0px
+- left: 0px
+- width: 81.9965px
+- height: 266.997px
+- box-sizing: content-box
+- border-top-width: 1.11111px
+- border-right-width: 0px
+- border-bottom-width: 1.11111px
+- border-left-width: 1.11111px
+
+manual_control_line_2
+- top: 0px
+- left: 32px
+- width: 148.993px
+- height: 266.997px
+- box-sizing: content-box
+- border-top-width: 0px
+- border-right-width: 0px
+- border-bottom-width: 1.11111px
+- border-left-width: 0px
+
+manual_control_line_4
+- top: -2px
+- left: 339px
+- width: 81.9965px
+- height: 270px
+- box-sizing: content-box
+- border-top-width: 1.11111px
+- border-right-width: 1.11111px
+- border-bottom-width: 0px
+- border-left-width: 0px
+
+manual_control_line_5
+- top: 268px
+- left: 179px
+- width: 240px
+- height: 83.9931px
+- box-sizing: content-box
+- border-top-width: 0px
+- border-right-width: 1.11111px
+- border-bottom-width: 1.11111px
+- border-left-width: 1.11111px
+
+### 4-6. line系の移植元 rect
+manual_control_content:
+- left: 1588.107666015625
+- top: 137.7257080078125
+- right: 2100.104217529297
+- bottom: 457.7257080078125
+- width: 511.9965515136719
+- height: 320
+
+manual_control_line_1:
+- left: 1588.107666015625
+- top: 137.7257080078125
+- right: 1671.2153091430664
+- bottom: 406.9444580078125
+- width: 83.1076431274414
+- height: 269.21875
+
+manual_control_line_2:
+- left: 1621.21533203125
+- top: 138.83680725097656
+- right: 1770.2083892822266
+- bottom: 406.94447326660156
+- width: 148.99305725097656
+- height: 268.107666015625
+
+manual_control_line_4:
+- left: 1928.2119140625
+- top: 136.8402862548828
+- right: 2011.3195571899414
+- bottom: 407.95140075683594
+- width: 83.1076431274414
+- height: 271.1111145019531
+
+manual_control_line_5:
+- left: 1768.2119140625
+- top: 406.82293701171875
+- right: 2010.4341430664062
+- bottom: 491.92710876464844
+- width: 242.22222900390625
+- height: 85.10417175292969
+
+### 4-7. 表示条件
+- devicePixelRatio: 0.8999999761581421
+- outerWidth / innerWidth = 1918 / 2124
+
+---
+
+## 5. A-003-2-4 の結論
+- manual_control_content を relative 親にする構成は正しい
+- line_1 / 2 / 4 / 5 を absolute 子で持つ構成は正しい
+- 全体枠構成の変更は、現時点では不要
+- 接点ズレは構造誤りではなく、移植元の非整数px / 非整数border幅の再現不足による可能性が高い
+- よって、manual_control の罫線接点の数pxズレは既知課題として保留可能
+
+---
+
+## 6. 現時点の manual_control の実装方針
+- tabs 基準位置は移植元準拠
+- PTZ / Speed / Zoom / Focus は main 内に含める
+- manual_control_main は横並び安定化済み
+- 縦位置も tabs と重ならない位置まで補正済み
+- ただし line 接点の微細なズレは残存
+
+---
+
+## 7. 保留中の既知課題
+- manual_control_line_1～5 の接点に数pxレベルのズレが残る
+- これは後で仕上げフェーズで再調整する
+- 再調整時は整数pxベースの勘調整ではなく、移植元の実測値ベースで扱う
+
+---
+
+## 8. 次スレッドで最初にやるべきこと
+テーマ:
+「A-003-2-5 limitation の外枠と表示切替余地を確定」
+
+優先順位:
+1. limitation_container の移植元DOM位置づけ確認
+2. limitation_container の高さ・外枠・上下余白を確定
+3. manual_control_container との上下関係を確認
+4. track_adjust_tabs_container との間隔・切替余地を確認
+5. 将来の表示切替に耐える枠構成かを確認
+
+---
+
+## 9. 新スレッドで前提として共有すべき判断
+- manual_control は、構造変更ではなく実測値再現の問題
+- よって A-003-2-5 は先へ進めてよい
+- ただし manual_control の line 接点ズレが limitation 側の位置決め基準に影響するかは確認する
+- 影響しないなら、line の仕上げは後回し
+
+---
+
+## 10. 新スレッドにアップロードする資料
+
+### 必須
+- index.html
+- mps.css
+- mps_init.js
+- 現在の全体スクショ　A-003-2-4_mps_root.png
+- 現在の manual_control_container スクショ　A-003-2-4_mps_manual_control_container.png
+- limitation 関連の移植元DOM資料　limitation_control_DOM.html
+- single_camera_right 全体スクショ　single_camera_right.png
+- mps_panel_from_single_camera_right.xlsx
+- limitation を含む右パネル拡大スクショ　single_camera_right_large.png
+
+- limitation 関連の computed style / rect
+
+### あるとよい
+- single_camera_right 全体スクショ
+- mps_panel_from_single_camera_right.xlsx
+- limitation を含む右パネル拡大スクショ
+
+---
+
+## 11. limitation で新たに取得したい情報
+### 11-1. limitation_container の移植元直下構造
+- 親子関係
+- 兄弟要素との並び順
+- タブ切替との関係
+
+### 11-2. limitation_container の computed
+最低限ほしいもの:
+- position
+- display
+- width
+- height
+- margin-top
+- margin-bottom
+- padding
+- box-sizing
+
+### 11-3. limitation_container の rect
+最低限ほしいもの:
+- left
+- top
+- width
+- height
+- bottom
+
+### 11-4. 隣接関係
+- manual_control_content の bottom
+- limitation の top
+- limitation の bottom
+- track_adjust_tabs の top
+
+### rect取得用の Console 例
+const r = $0.getBoundingClientRect();
+console.log({
+  left: r.left,
+  top: r.top,
+  right: r.right,
+  bottom: r.bottom,
+  width: r.width,
+  height: r.height
+});
+
+---
+
+## 12. 新スレッド開始時の依頼文テンプレート
+A-003-2-5 を再開します。
+
+A-003-2-4 では、manual_control_container の再配置を完了しました。
+manual_control_line_* の接点に数pxのズレは残っていますが、追加解析の結果、全体枠構成の変更は不要で、移植元の非整数px / 非整数border幅の再現不足による可能性が高いと判断しています。
+この件は既知課題として保留し、次は limitation の外枠と表示切替余地を確定したいです。
+
+方針:
+- #mps_root スコープを維持
+- mps_panel_body は block レイアウト維持
+- flex は必要箇所のみ
+- コード提示は旧/新を対で
+- 1修正ごとに確認し、先走らない
+
+以下の資料をアップロードします。

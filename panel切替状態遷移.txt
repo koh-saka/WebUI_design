@@ -1,0 +1,26 @@
+[A-1] normal PTZ + Auto Framing
+  ├─ 上段 PTZ Header : PTZ 単一固定 expand押下 → [B-1]
+  ├─ PTZ UI
+  ├─ 下段 Auto Framing / Image Adjust タブ（Auto Framing選択）expand押下 → [B-1]
+  └─ 下段 Image Adjust押下 → [A-2]
+
+[A-2] normal PTZ + Image Adjust
+  ├─ 上段 PTZ Header : PTZ 単一固定 expand押下 → [B-1]
+  ├─ PTZ UI
+  ├─ 下段 Auto Framing / Image Adjust タブ（Image Adjust選択）expand押下 → [B-1]
+  └─ 下段 Auto Framing押下 → [A-1]
+
+[B-1] expanded + auto-framing
+  ├─ 上段 PTZ押下 → [B-3]
+  ├─ 上段 Image Adjust押下 → [B-2]
+  └─ reduce押下 → [A-1]
+
+[B-2] expanded + image-adjust
+  ├─ 上段 PTZ押下 → [B-3]
+  ├─ 上段 Auto Framing押下 → [B-1]
+  └─ reduce押下 → [A-1]
+
+[B-3] expanded + ptz
+  ├─ 上段 Auto Framing押下 → [B-1]
+  ├─ 上段 Image Adjust押下 → [B-2]
+  └─ reduce押下 → [A-1]

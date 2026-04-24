@@ -1,0 +1,16 @@
+■現在のコード（全て）
+- index.html
+- mps.css
+- mps_init.js
+■移植先情報
+- 現在の全体スクショ A-003-2-5_mps_root.png
+- 現在の右パネル拡大スクショ A-003-2-5_right_panel_large.png
+- mps_panel_from_single_camera_right.xlsx
+- TaskList.xlsx
+■移植元情報
+- single_camera_right 全体スクショ single_camera_right.png
+- Auto Framing 切替状態のスクショ auto_framing_select.png
+- Image Adjust 切替状態のスクショ image_adjust_select.png
+- AutoFraming選択時 track_adjust_content_auto_tracking_DOM.html
+- Image Adjust 選択時 track_adjust_content_image_adjust_DOM.html_
+

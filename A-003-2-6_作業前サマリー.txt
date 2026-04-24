@@ -1,0 +1,345 @@
+A-003-2-6 を再開します。
+
+## 1. 現在のフェーズ
+- フェーズ: A-003 画面コンテナ構造作成
+- 完了:
+  - A-003-1: 主要コンテナDOM再現
+  - A-003-2-3: mps_panel_body の縦積み構造確定
+  - A-003-2-4: mps_manual_control_container の再配置
+  - A-003-2-5: limitation の外枠と表示切替余地を確定
+- 次に着手:
+  - A-003-2-6: track_adjust_tabs_container と track_adjust_content_container の外枠確定
+
+---
+
+## 2. 最重要方針
+- 移植先:
+  - #mps_root = #camera_live_area
+- CSS方針:
+  - #mps_root スコープで閉じる
+  - mps_ 接頭辞を使用
+  - 移植元CSSは参照のみ、コピー禁止
+- レイアウト方針:
+  - mps_panel_body 自体は block レイアウト維持
+  - flex は必要箇所のみ導入
+- debugルール:
+  - 見た目確認のみ
+  - position / display をむやみに変えない
+- 作業ルール:
+  - コード提示は旧コード / 新コードを対で出す
+  - 1修正ごとに確認し、確認完了まで次の修正を出さない
+- 重要ルール:
+  - 移植元と異なる設計や実装を提案する場合は、先にその意図・理由・メリット/デメリットを明確に説明してから進める
+  - 時短優先でも、その場しのぎの修正は避ける
+
+---
+
+## 3. 現在の確定トップ構造
+#mps_panel
+ ├ #mps_panel_header
+ ├ #mps_panel_body
+ │   ├ .mps_manual_control_container
+ │   ├ .mps_limitation_container
+ │   ├ .mps_track_adjust_tabs_container
+ │   └ .mps_track_adjust_content_container
+ │        ├ .mps_auto_framing_container
+ │        └ .mps_image_adjust_container
+ └ .mps_status
+
+---
+
+## 4. A-003-2-4 までで確定したこと（manual_control）
+### 4-1. manual_control の基本構造
+- Focus slider を mps_manual_control_main の外へ出す案は中止
+- Focus は main の中に含める
+- manual_control_content 全体を移植元準拠で再配置した
+
+### 4-2. manual_control_content の移植元直下構造
+manual_control_content
+├ manual_frame_adjust_tabs
+├ manual_control_line_1
+├ [PTZ縦積みラッパ]
+│  ├ camera_ptz_ctrl
+│  ├ manual_control
+│  └ lock_part
+├ speed_slider
+├ zoom_slider
+└ focus_slider
+
+### 4-3. manual_control_content の移植元 computed
+- position: relative
+- display: flex
+- flex-direction: row
+- justify-content: space-around
+- align-items: normal
+- width: 511.997px
+- height: 320px
+- box-sizing: content-box
+
+### 4-4. manual_frame_adjust_tabs の移植元 computed
+- position: absolute
+- top: -14px
+- left: 90px
+- width: 240px
+- height: 29px
+- display: flex
+- align-items: center
+- justify-content: center
+- z-index: 2
+
+### 4-5. line系の移植元 computed
+manual_control_line_1
+- top: 0px
+- left: 0px
+- width: 81.9965px
+- height: 266.997px
+- border-top-width: 1.11111px
+- border-right-width: 0px
+- border-bottom-width: 1.11111px
+- border-left-width: 1.11111px
+
+manual_control_line_2
+- top: 0px
+- left: 32px
+- width: 148.993px
+- height: 266.997px
+- border-top-width: 0px
+- border-right-width: 0px
+- border-bottom-width: 1.11111px
+- border-left-width: 0px
+
+manual_control_line_4
+- top: -2px
+- left: 339px
+- width: 81.9965px
+- height: 270px
+- border-top-width: 1.11111px
+- border-right-width: 1.11111px
+- border-bottom-width: 0px
+- border-left-width: 0px
+
+manual_control_line_5
+- top: 268px
+- left: 179px
+- width: 240px
+- height: 83.9931px
+- border-top-width: 0px
+- border-right-width: 1.11111px
+- border-bottom-width: 1.11111px
+- border-left-width: 1.11111px
+
+### 4-6. A-003-2-4 の結論
+- manual_control_content を relative 親にする構成は正しい
+- line_1 / 2 / 4 / 5 を absolute 子で持つ構成は正しい
+- 全体枠構成の変更は不要
+- 接点ズレは構造誤りではなく、移植元の非整数px / 非整数border幅の再現不足による可能性が高い
+- manual_control の line 接点の数pxズレは既知課題として保留可能
+
+---
+
+## 5. A-003-2-5 で確定したこと（limitation）
+### 5-1. limitation_control の移植元実測
+- limitation_control:
+  - position: relative
+  - display: flex
+  - width: 67.1875px
+  - height: 90.2257px
+  - margin-top: -38px
+  - padding-left: 20px
+  - padding-right: 10px
+- limitation_control の rect:
+  - left: 1588.107666015625
+  - top: 419.7395935058594
+  - right: 1685.2951736450195
+  - bottom: 509.96529388427734
+  - width: 97.18750762939453
+  - height: 90.22570037841797
+
+### 5-2. limitation 内部
+- left_content:
+  - width: 67.1875
+  - height: 90.2257
+- button:
+  - width: 64.21875
+  - height: 64.21875
+- title:
+  - height: 21.0069
+  - margin-top: 5px
+- right_content:
+  - position: absolute
+  - width: 208px
+  - height: 208px
+  - hidden 初期状態: display none
+- right_content 一時表示時 rect:
+  - left: 1722.100830078125
+  - top: 425.72918701171875
+  - right: 1932.3091735839844
+  - bottom: 635.9375305175781
+  - width: 210.20834350585938
+  - height: 210.20834350585938
+
+### 5-3. limitation と manual の上下関係
+- manual_control_content.bottom = 457.7257080078125
+- limitation_control.top = 419.7395935058594
+- 差分 = -37.986114501953125
+- つまり limitation は manual に約 38px 食い込む
+
+### 5-4. limitation_control_right_content の扱い
+- limitation_control_right_content は、移植元で Limitation ボタン押下時に表示される absolute のポップアップ領域である
+- A-003-2-5 では、DOM上の存在確認・hidden 初期状態・約208x208の表示サイズ確認・表示余地確保までを完了とする
+- 開閉挙動およびポップアップ内部の実装は、後工程の挙動実装フェーズへ保留とする
+
+### 5-5. A-003-2-5 の結論
+- .mps_limitation_control に margin-top: -38px を持たせる
+- .mps_manual_control_container は min-height: 320px を基準にする
+- .mps_limitation_container は、将来の right_content 表示余地を確保する外枠として扱う
+- Limitation ボタンの意匠は現時点では仮デザインでOK
+- 目的は達成済み:
+  - limitation の外枠確定
+  - manual_control との食い込み関係確定
+  - 将来の表示切替余地確定
+
+---
+
+## 6. Lock の扱い
+### 6-1. 現状
+- Lock の top を line_5.top に厳密一致させる作業を試行
+- absolute 化案は不採用
+- relative 構成を維持する方針を採用
+- 現在は relative のまま、他オブジェクトへ副作用なく配置できている
+
+### 6-2. 判断
+- Lock.top と line_5.top の厳密一致は、現時点では最終調整事項へ回す
+- 理由:
+  - line_5 自体が他 line との接続ズレ問題の保留対象
+  - そのため今ここで Lock だけ厳密追従させても、仕上げフェーズで再調整の可能性が高い
+- したがって、Lock は
+  - 構造確定
+  - 微調整保留
+  とする
+
+### 6-3. 設計メモ
+- Lock は relative 構成を維持して配置した
+- line_5.top との厳密一致は、manual_control の line 接点ズレが既知課題であるため、この時点では追い込まず、line 系の最終実測調整時に合わせて再調整する
+
+---
+
+## 7. 現時点の保留課題
+- manual_control_line_1～5 の接点に数pxレベルのズレが残る
+- Lock.top と line_5.top の厳密一致は最終調整事項
+- Limitation ボタン意匠の本格再現は後工程へ保留
+- limitation_control_right_content のポップアップ開閉挙動は後工程へ保留
+- これらはすべて、構造確定後の仕上げフェーズまたは挙動実装フェーズで再調整する
+
+---
+
+## 8. 次スレッドで最初にやるべきこと
+テーマ:
+「A-003-2-6: track_adjust_tabs_container と track_adjust_content_container の外枠確定」
+
+優先順位:
+1. track_adjust_tabs_container の移植元DOM位置づけ確認
+2. track_adjust_content_container の移植元DOM位置づけ確認
+3. Auto Framing / Image Adjust の切替構造確認
+4. tabs の高さ・上下余白・content との間隔を確定
+5. content 側の外枠・最小高さ・将来の切替余地を確定
+6. limitation_container との上下関係を確認
+
+---
+
+## 9. 次スレッドで共有すべき前提判断
+- manual_control は構造変更ではなく実測値再現の問題
+- limitation は位置関係と表示切替余地まで確定済み
+- limitation_control_right_content は存在確認・hidden 初期状態・表示サイズ確認・表示余地確保まで完了、挙動実装は保留
+- Lock は relative 構成維持、top の微差は保留
+- よって次は track_adjust_tabs / track_adjust_content の外枠確定に進めてよい
+
+---
+
+## 10. 新スレッドにアップロードする資料
+### 必須
+- index.html
+- mps.css
+- mps_init.js
+- 現在の全体スクショ
+- 現在の右パネル拡大スクショ
+- track_adjust 関連の移植元DOM資料
+- track_adjust 関連の computed style / rect
+
+### あるとよい
+- single_camera_right 全体スクショ
+- mps_panel_from_single_camera_right.xlsx
+- Auto Framing / Image Adjust 切替状態のスクショ
+- TaskList.xlsx
+
+---
+
+## 11. track_adjust で新たに取得したい情報
+### 11-1. track_adjust_tabs の移植元直下構造
+- 親子関係
+- 兄弟要素との並び順
+- limitation との関係
+- content との関係
+
+### 11-2. track_adjust_tabs の computed
+最低限ほしいもの:
+- position
+- display
+- width
+- height
+- margin-top
+- margin-bottom
+- padding
+- box-sizing
+
+### 11-3. track_adjust_content の computed
+最低限ほしいもの:
+- position
+- display
+- width
+- height
+- min-height
+- margin-top
+- margin-bottom
+- padding
+- box-sizing
+
+### 11-4. rect
+最低限ほしいもの:
+- limitation の bottom
+- track_adjust_tabs の top / bottom
+- track_adjust_content の top / bottom
+- Auto Framing container の rect
+- Image Adjust container の rect
+
+### rect取得用の Console 例
+const r = $0.getBoundingClientRect();
+console.log({
+  left: r.left,
+  top: r.top,
+  right: r.right,
+  bottom: r.bottom,
+  width: r.width,
+  height: r.height
+});
+
+---
+
+## 12. 新スレッド開始時の依頼文テンプレート
+A-003-2-6 を再開します。
+
+A-003-2-5 では、limitation の外枠と表示切替余地を確定しました。
+manual_control との食い込み関係は、移植元実測どおり limitation_control 側の margin-top: -38px を基準に整理しています。
+また、limitation_control_right_content は Limitation ボタン押下時に表示される absolute のポップアップ領域として存在確認・hidden 初期状態・表示サイズ確認・表示余地確保まで完了し、開閉挙動は後工程へ保留しています。
+Lock は relative 構成を維持し、top の厳密一致は line 系の最終実測調整時に再調整する方針です。
+
+方針:
+- #mps_root スコープを維持
+- mps_panel_body は block レイアウト維持
+- flex は必要箇所のみ
+- コード提示は旧/新を対で
+- 1修正ごとに確認し、先走らない
+- 移植元と異なる設計や実装を提案する場合は、先にその意図・理由・メリット/デメリットを明示する
+
+必要な資料を順次アップロードしますので、解析をすすめてください。
+作業アクションについては、私から指示があるまでは保留しておいてください。
